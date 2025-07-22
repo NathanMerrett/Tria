@@ -1,0 +1,64 @@
+# === Python artifacts ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Byte-compiled or optimized files
+*.pyc
+
+# === Virtual environments ===
+.venv/
+venv/
+ENV/
+env/
+# Poetry in-project venv
+.venv/
+
+# === Package management ===
+# (keep pyproject.toml and poetry.lock)
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+
+# === Editor/IDE ===
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Logs and local dev files ===
+*.log
+*.sqlite3
+*.db
+*.pid
+
+# === Testing ===
+htmlcov/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+pytest_cache/
+
+# === Docker ===
+*.tar
+*.img
+*.container
+
+# === Environment files ===
+.env
+.env.*
+
+# === Misc ===
+*.bak
+*.swp
+*.tmp
