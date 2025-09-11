@@ -1,53 +1,47 @@
-import { Stack, useRouter, useSegments } from 'expo-router';
-import { UserProvider, useUser } from '../context/UserContext'; // Adjust path if needed
-import { useEffect } from 'react';
-import * as SplashScreen from 'expo-splash-screen';
+import { Slot } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { UserProvider, useUser } from "../context/UserContext";
+import { PaperProvider } from 'react-native-paper';
+import { useAppTheme } from '../theme';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-// This is the component that contains the actual navigation logic.
-// It's separate so it can be wrapped by the UserProvider.
-const RootLayoutNav = () => {
-  // Get the auth state and loading status from your custom hook
-  const { session, loading } = useUser();
-  const router = useRouter();
-  const segments = useSegments();
+
+SplashScreen.preventAutoHideAsync();
+
+function Boot() {
+  const { loading, session, user } = useUser(); // Destructure session and user to log them
 
   useEffect(() => {
-    // 1. Wait until the session is loaded or an error occurs
-    if (loading) {
-      return;
+    console.log('Boot Component: useEffect triggered. Loading:', loading);
+    if (!loading) {
+      console.log('Boot Component: Loading is false, hiding splash screen.');
+      SplashScreen.hideAsync();
     }
+  }, [loading]);
 
-    const inAuthGroup = segments[0] === '(auth)';
+  console.log('Boot Component: Rendering. Current loading state:', loading, 'Session:', session ? 'Active' : 'None', 'User:', user ? user.id : 'None');
 
-    // 2. Hide the native splash screen now that we have auth status
-    SplashScreen.hideAsync();
+  if (loading) {
+    console.log('Boot Component: Still loading, returning null.');
+    return null;
+  }
 
-    // 3. Perform the redirect based on auth state
-    if (session && !inAuthGroup) {
-      // User is authenticated and not in an auth screen.
-      // Redirect them to the main screen of the app.
-      router.replace('/(tabs)/today'); // <-- Or your main app route
-    } else if (!session && !inAuthGroup) {
-      // User is not authenticated and is not in an auth screen.
-      // This can happen if they are on a protected route and get logged out.
-      // Send them to the login page.
-      router.replace('/login');
-    }
+  console.log('Boot Component: Loading complete, rendering Slot.');
+  return <Slot />;
+}
 
-  }, [session, loading, segments]); // Re-run the effect when auth state or loading status changes
-
-  // The Stack navigator will render the appropriate screen.
-  // The useEffect handles the redirection logic.
-  return <Stack screenOptions={{ headerShown: false }} />;
-};
-
-// This is the main export for the root layout.
 export default function RootLayout() {
+  const theme = useAppTheme();
+  console.log('RootLayout: Rendering...');
+  
   return (
-    // Your UserProvider wraps everything, making the user/session
-    // available to all components, including RootLayoutNav.
     <UserProvider>
-      <RootLayoutNav />
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <Boot />
+        </PaperProvider>
+      </SafeAreaProvider>
     </UserProvider>
   );
 }

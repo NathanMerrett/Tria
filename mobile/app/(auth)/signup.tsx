@@ -1,24 +1,17 @@
 import { useState } from 'react';
-import { View, Alert, StyleSheet } from 'react-native';
+import { View, Alert, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { supabase } from '../../lib/supabase'; // Adjust path if needed
 import { Link, router } from 'expo-router';
-import {
-  PaperProvider,
-  TextInput,
-  Button,
-  Text,
-} from 'react-native-paper';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-
-// Import our shared components & theme
-import PrimaryButton from '../../components/PrimaryButton'; // Adjust path
-import { theme } from '../../theme'; // Adjust path
+import { TextInput, Button, Text, Appbar } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from 'react-native-paper'; // Import the useTheme hook
 
 export default function SignUp() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const theme = useTheme(); // Get the theme object
 
   const signUp = async () => {
     setLoading(true);
@@ -34,93 +27,120 @@ export default function SignUp() {
       return;
     }
     Alert.alert('Success!', 'Please check your email to verify your account.');
-    router.replace('/login');
+    router.replace('/(auth)/login');
   };
 
   return (
-    <PaperProvider theme={theme}>
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.content}>
-            <Text variant="headlineMedium" style={styles.title}>
+    // 1. Root container sets the overall background color for the screen
+    <View style={[styles.rootContainer, { backgroundColor: theme.colors.background }]}>
+      
+      {/* 2. Appbar is styled to be transparent and flat, blending with the background */}
+      <Appbar.Header style={styles.appbarHeader}>
+        <Appbar.BackAction 
+          onPress={() => router.navigate("/")} 
+          color={theme.colors.onSurface} 
+        />
+      </Appbar.Header>
+
+      {/* 3. SafeAreaView wraps only the content, not the header */}
+      <SafeAreaView style={styles.contentSafeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
+        >
+          {/* 4. Form container centers the content */}
+          <View style={styles.formContainer}>
+            <Text variant="displayMedium" style={[styles.title, { color: theme.colors.primary }]}>
               Create Account
             </Text>
-            <Text variant="bodyMedium" style={styles.subtitle}>
-              Start your journey with us
+            <Text variant="bodyMedium" style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}>
+              Start your Triathlon with us
             </Text>
 
             <TextInput
               label="Username"
+              mode='outlined'
               value={username}
               onChangeText={setUsername}
-              style={styles.input}
-              left={<TextInput.Icon icon="account-outline" />}
+              left={<TextInput.Icon icon="account-outline"/>}
               autoCapitalize="none"
               disabled={loading}
+              style={styles.input}
             />
             <TextInput
               label="Email"
+              mode='outlined'
               value={email}
               onChangeText={setEmail}
-              style={styles.input}
-              left={<TextInput.Icon icon="email-outline" />}
+              left={<TextInput.Icon icon="email-outline"/>}
               keyboardType="email-address"
               autoCapitalize="none"
               disabled={loading}
+              style={styles.input}
             />
             <TextInput
               label="Password"
+              mode='outlined'
               value={password}
               onChangeText={setPassword}
-              style={styles.input}
               secureTextEntry
               left={<TextInput.Icon icon="lock-outline" />}
               disabled={loading}
+              style={styles.input}
             />
 
-            <PrimaryButton title="Sign Up" onPress={signUp} loading={loading} />
+            <Button mode='contained' onPress={signUp} loading={loading} style={styles.button}>
+              Sign Up
+            </Button>
 
-            <Link href="/login" asChild>
-              <Button
-                style={styles.secondaryButton}
-                labelStyle={{ color: theme.colors.primary }}
-                disabled={loading}
-              >
+            <Link href="/(auth)/login" asChild>
+              <Button mode='text' disabled={loading} style={styles.link}>
                 Already have an account? Log In
               </Button>
             </Link>
           </View>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </PaperProvider>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }
 
+// 5. Styles are updated to match the new structure
 const styles = StyleSheet.create({
-  container: {
+  rootContainer: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
-  content: {
+  appbarHeader: {
+    backgroundColor: 'transparent', // Make it transparent to show the root view's color
+    elevation: 0, // Remove shadow on Android
+    shadowOpacity: 0, // Remove shadow on iOS
+  },
+  contentSafeArea: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  formContainer: {
     flex: 1,
     justifyContent: 'center',
-    padding: 24,
+    paddingHorizontal: 20, // Use horizontal padding
   },
   title: {
-    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     textAlign: 'center',
-    marginBottom: 24,
-    color: '#666',
+    marginBottom: 32,
   },
   input: {
     marginBottom: 16,
-    backgroundColor: theme.colors.surface,
   },
-  secondaryButton: {
+  button: {
     marginTop: 16,
+  },
+  link: {
+    marginTop: 8,
   },
 });

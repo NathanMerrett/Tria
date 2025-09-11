@@ -1,68 +1,68 @@
-import { View, Image, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
-import { PaperProvider, Button } from 'react-native-paper';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import PrimaryButton from '../components/PrimaryButton';
-import { theme } from '../theme';
+import { View, Image, StyleSheet } from "react-native";
+import { Link, Redirect } from "expo-router";
+import { Button } from "react-native-paper";
+import { useTheme } from 'react-native-paper';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "../context/UserContext";
 
 export default function LandingPage() {
+  const { session, loading } = useUser(); // Also destructure loading to understand when the check is complete
+  const theme = useTheme();
+
+  console.log('LandingPage: Rendering. Session:', session ? 'Active' : 'None', 'Loading:', loading);
+
+  if (loading) {
+    console.log('LandingPage: Still loading, rendering nothing yet.');
+    return null; // Or a loading spinner if you prefer
+  }
+
+  if (session) {
+    console.log('LandingPage: Session active, redirecting to (tabs).');
+    return <Redirect href="/(tabs)" />;
+  }
+
+  console.log('LandingPage: No active session, showing login/signup options.');
   return (
-    <PaperProvider theme={theme}>
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          {/* Your Logo */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/images/tria_icon.png')} // Adjust path as needed
-              style={styles.logo}
-            />
-          </View>
+    <SafeAreaView style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View style={styles.content}>
+        <Image
+          source={require("../assets/images/tria_icon.png")}
+          style={styles.logo}
+        />
+        <Link href="/(auth)/signup" asChild>
+          <Button mode="contained" style={styles.button}> 
+            Sign Up
+          </Button>
+        </Link>
 
-          {/* Action Buttons */}
-          <View style={styles.actions}>
-            {/* Primary Action: Sign Up */}
-            <Link href="/signup" asChild>
-              <PrimaryButton title="Sign Up" style={styles.button} />
-            </Link>
-
-            {/* Secondary Action: Login */}
-            <Link href="/login" asChild>
-              <Button
-                mode="outlined"
-                style={styles.button}
-                labelStyle={{ color: theme.colors.primary, fontWeight: 'bold' }}
-              >
-                Login
-              </Button>
-            </Link>
-          </View>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </PaperProvider>
+        <Link href="/(auth)/login" asChild>
+          <Button mode="outlined" style={styles.button}>
+            Login
+          </Button>
+        </Link>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: 24,
   },
-  logoContainer: {
+  content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
   },
   logo: {
-    width: 240,
-    height: 240,
-    resizeMode: 'contain',
-  },
-  actions: {
-    width: '100%',
+    width: 200,
+    height: 200,
+    resizeMode: "contain",
+    marginBottom: 10,
   },
   button: {
-    marginBottom: 12,
-    paddingVertical: 4,
-  },
+    width: 200,
+    marginBottom: 10
+  }
 });

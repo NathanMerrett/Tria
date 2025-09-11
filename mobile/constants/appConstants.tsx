@@ -1,0 +1,1 @@
+export const TOTAL_WIZARD_STEPS = 5;
