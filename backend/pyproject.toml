@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["NathanMerrett <merrettn@gmail.com>"]
 readme = "README.md"
+packages = [{ include = "app", from = "src" }]
 package-mode = false
 
 [tool.poetry.dependencies]
@@ -13,6 +14,19 @@ uvicorn = "^0.35.0"
 supabase = "^2.17.0"
 python-dotenv = "^1.1.1"
 psycopg2 = "^2.9.10"
+pydantic = "^2.11.9"
+pydantic-settings = "^2.10.1"
+pandas = "^2.3.3"
+matplotlib = "^3.10.6"
+ipython = "^9.6.0"
+langchain-google-genai = "^2.1.12"
+google-genai = "^1.40.0"
+langgraph = "^1.0.3"
+langchain-anthropic = "^0.3.21"
+langchain-openai = "^1.0.3"
+streamlit = "^1.51.0"
+langchain = {extras = ["openai"], version = "^1.0.8"}
+seaborn = "^0.13.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"

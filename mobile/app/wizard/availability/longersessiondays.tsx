@@ -3,13 +3,12 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Text, Button, useTheme, Checkbox } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import WizardHeader from '../../../components/WizardHeader';
-import { TOTAL_WIZARD_STEPS } from '../../../constants/appConstants';
+import WizardHeader from '@/src/components/WizardHeader';
 import {
   useWizardDispatch,
   useWizardState,
   WeekdaysType,
-} from '../../../context/WizardContext';
+} from '@/src/context/WizardContext';
 
 const DAYS = [
   { key: 'mon', label: 'Monday' as WeekdaysType },
@@ -62,7 +61,7 @@ export default function LongerSessionDays() {
 
   return (
     <View style={styles.root}>
-      <WizardHeader step={2} totalSteps={TOTAL_WIZARD_STEPS} onCloseRoute="/(tabs)" />
+      <WizardHeader step={5} />
 
       <ScrollView
         style={[styles.content, { backgroundColor: theme.colors.background }]}
@@ -80,42 +79,42 @@ export default function LongerSessionDays() {
         </Text>
 
         <Card mode="elevated" style={styles.tableCard}>
-                  <View style={styles.tableHeader}>
-                    <Text style={styles.tableHeaderDay}>{''}</Text>
-                    <Text variant="titleMedium" style={styles.tableHeaderText}>AM</Text>
-                    <Text variant="titleMedium" style={styles.tableHeaderText}>PM</Text>
-                  </View>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderDay}>{''}</Text>
+            <Text variant="titleMedium" style={styles.tableHeaderText}>AM</Text>
+            <Text variant="titleMedium" style={styles.tableHeaderText}>PM</Text>
+          </View>
 
-        {DAYS.map(({ key, label }) => {
-          const day = availability[label];
-          const amSelected = !!day?.am?.selected;
-          const pmSelected = !!day?.pm?.selected;
-          const amLongOK = !!day?.am?.longOK;
-          const pmLongOK = !!day?.pm?.longOK;
-          const dim = !amSelected && !pmSelected;
+          {DAYS.map(({ key, label }) => {
+            const day = availability[label];
+            const amSelected = !!day?.am?.selected;
+            const pmSelected = !!day?.pm?.selected;
+            const amLongOK = !!day?.am?.longOK;
+            const pmLongOK = !!day?.pm?.longOK;
+            const dim = !amSelected && !pmSelected;
 
-          return (
+            return (
 
-            <View key={key} style={styles.tableRow}>
+              <View key={key} style={styles.tableRow}>
                 <Text variant="titleMedium" style={styles.dayLabel}>{label}</Text>
-                    <View style={styles.checkboxContainer}>
-                      {amSelected ? 
-                      <Checkbox.Android
-                        status={amSelected && amLongOK ? 'checked' : 'unchecked'}
-                        onPress={() => toggleLong(label, 'am')}
-                      /> : '' }
-                    </View>
-                    <View style={styles.checkboxContainer}>
-                      {pmSelected ? 
-                      <Checkbox.Android
-                        status={pmLongOK ? 'checked' : 'unchecked'}
-                        onPress={() => toggleLong(label, 'pm')}
-                      /> : '' }
-                    </View>
-                          </View>
-                        );
-                      })}
-                    </Card>
+                <View style={styles.checkboxContainer}>
+                  {amSelected ?
+                    <Checkbox.Android
+                      status={amSelected && amLongOK ? 'checked' : 'unchecked'}
+                      onPress={() => toggleLong(label, 'am')}
+                    /> : ''}
+                </View>
+                <View style={styles.checkboxContainer}>
+                  {pmSelected ?
+                    <Checkbox.Android
+                      status={pmLongOK ? 'checked' : 'unchecked'}
+                      onPress={() => toggleLong(label, 'pm')}
+                    /> : ''}
+                </View>
+              </View>
+            );
+          })}
+        </Card>
 
       </ScrollView>
 
@@ -125,7 +124,7 @@ export default function LongerSessionDays() {
           onPress={onNext}
           accessibilityLabel="Next: set swimming level"
           contentStyle={styles.nextButtonContent}
-          disabled={!hasAnySelectedSessions}
+          disabled={longCount === 0}
         >
           Next
         </Button>

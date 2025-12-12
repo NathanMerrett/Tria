@@ -1,55 +1,75 @@
+import React from 'react';
+import { View } from 'react-native';
 import { Tabs, Redirect } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useUser } from '@/context/UserContext';
-import { useTheme } from 'react-native-paper'; // Import useTheme
+import { useUser } from '@/src/context/UserContext';
+import { useTheme, Appbar } from 'react-native-paper';
+import { HeaderAvatar } from '@/src/features/athlete/components/HeaderAvatar';
+import { getHeaderTitle } from '@react-navigation/elements'; // Helper to get the active tab title
+
+// 1. Create the Custom Header Component
+const TabsHeader = ({ options, route }: { options: any; route: any }) => {
+  const theme = useTheme();
+  const title = getHeaderTitle(options, route.name);
+
+  return (
+    <Appbar.Header
+      // Match the style of your ProfileStackHeader
+      style={{ backgroundColor: theme.colors.background, elevation: 0 }}
+    >
+      {/* Since this is the main Tab view, we usually don't need a BackAction. 
+         We render the Title and the Avatar.
+      */}
+      <Appbar.Content title={title} />
+
+      {/* Container for the Avatar to ensure consistent spacing */}
+      <View style={{ paddingRight: 16 }}>
+        <HeaderAvatar />
+      </View>
+    </Appbar.Header>
+  );
+};
 
 export default function TabsLayout() {
   const { session } = useUser();
-  const theme = useTheme(); // Hook to get theme colors
+  const theme = useTheme();
 
-  // Not logged in? Protect tabs.
   if (!session) return <Redirect href="/(auth)/login" />;
 
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: theme.colors.secondary, // Color for the active icon and label
-        tabBarInactiveTintColor: theme.colors.onSurfaceVariant, // Color for inactive icons and labels
+        // 2. REPLACEMENT: Use 'header' instead of 'headerRight'
+        header: (props) => <TabsHeader {...props} />,
+
+        // Tab Bar Styling
+        tabBarActiveTintColor: theme.colors.secondary,
+        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
         tabBarStyle: {
-          backgroundColor: theme.colors.surface, // Use surface color for the tab bar background
-          // borderTopColor: theme.colors.outline, // Use outline color for the top border
-          // borderTopWidth: 1, // Add a 1-pixel border to the top
-          // elevation: 3, // Adds a shadow for Android (optional)
-          // shadowOpacity: 0.1, // Adds a shadow for iOS (optional)
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.outline,
         },
       }}>
+
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="star" size={size} color={color} />,
+          title: 'Today', // This string is passed to props.options in TabsHeader
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="sun" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="plan"
         options={{
           title: 'Plan',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="calendar-alt" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="community"
-        options={{
-          title: 'Community',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="users" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="calendar" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="support"
         options={{
           title: 'Support',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="question-circle" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="question" size={size} color={color} />,
         }}
       />
     </Tabs>

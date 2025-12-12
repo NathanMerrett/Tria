@@ -35,6 +35,13 @@ npm run reset-project
 
 This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
+## Backend & Auth
+
+This app uses Supabase for authentication and backend services.
+
+- **Configuration**: Authenticated sessions are persisted using `AsyncStorage`. This means you will remain logged in across app restarts until you explicitly sign out or the token expires.
+- **Setup**: The Supabase client is initialized in `lib/supabase.ts`.
+
 ## Learn more
 
 To learn more about developing your project with Expo, look at the following resources:

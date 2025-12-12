@@ -3,7 +3,7 @@ import { Link, Redirect } from "expo-router";
 import { Button } from "react-native-paper";
 import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useUser } from "../context/UserContext";
+import { useUser } from "@/src/context/UserContext";
 
 export default function LandingPage() {
   const { session, loading } = useUser(); // Also destructure loading to understand when the check is complete
@@ -23,14 +23,14 @@ export default function LandingPage() {
 
   console.log('LandingPage: No active session, showing login/signup options.');
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: theme.colors.background}]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.content}>
         <Image
           source={require("../assets/images/tria_icon.png")}
           style={styles.logo}
         />
         <Link href="/(auth)/signup" asChild>
-          <Button mode="contained" style={styles.button}> 
+          <Button mode="contained" style={styles.button}>
             Sign Up
           </Button>
         </Link>

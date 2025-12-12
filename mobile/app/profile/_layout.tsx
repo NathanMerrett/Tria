@@ -7,8 +7,8 @@ const ProfileStackHeader = ({ }) => {
   const theme = useTheme();
   return (
     <Appbar.Header style={{ backgroundColor: theme.colors.background, elevation: 0 }}>
-       <Appbar.BackAction onPress={() => router.back()} />
-      <Appbar.Content title= {'Profile'} />
+      <Appbar.BackAction onPress={() => router.back()} />
+      <Appbar.Content title={'Profile'} />
     </Appbar.Header>
   );
 };

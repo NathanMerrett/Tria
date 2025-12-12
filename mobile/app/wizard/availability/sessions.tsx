@@ -4,13 +4,13 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Text, Button, useTheme, Checkbox, Icon } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import WizardHeader from '../../../components/WizardHeader';
-import { TOTAL_WIZARD_STEPS } from '../../../constants/appConstants';
+import WizardHeader from '@/src/components/WizardHeader';
+import { TOTAL_WIZARD_STEPS } from '@/constants/appConstants';
 import {
   useWizardDispatch,
   useWizardState,
   WeekdaysType,
-} from '../../../context/WizardContext';
+} from '@/src/context/WizardContext';
 
 const DAYS = [
   { key: 'mon', label: 'Monday' },
@@ -60,6 +60,33 @@ export default function AvailabilityDays() {
     });
   };
 
+  // NEW: bulk setter to support quick-select buttons
+  const setAll = (am: boolean, pm: boolean) => {
+    DAYS.forEach((d) => {
+      const day = toWeekday[d.key];
+      const currentAM = availability[day].am.selected;
+      const currentPM = availability[day].pm.selected;
+
+      if (currentAM !== am) {
+        dispatch({
+          type: 'SET_SLOT_SELECTED',
+          payload: { day, slot: 'am', selected: am },
+        });
+      }
+      if (currentPM !== pm) {
+        dispatch({
+          type: 'SET_SLOT_SELECTED',
+          payload: { day, slot: 'pm', selected: pm },
+        });
+      }
+    });
+  };
+
+  // NEW: convenience handlers
+  const selectAll = () => setAll(true, true);
+  const selectAM = () => setAll(true, false);
+  const selectPM = () => setAll(false, true);
+
   const onNext = () => {
     // Go to Page 2: capture Long OK per selected slot
     // Change the route below to match your file structure for page 2.
@@ -69,9 +96,7 @@ export default function AvailabilityDays() {
   return (
     <View style={styles.rootContainer}>
       <WizardHeader
-        step={1}
-        totalSteps={TOTAL_WIZARD_STEPS}
-        onCloseRoute="/(tabs)"
+        step={4}
       />
 
       <ScrollView
@@ -99,6 +124,33 @@ export default function AvailabilityDays() {
         >
           Please pick at least 5 sessions.
         </Text>
+
+        <View style={styles.quickSelectRow}>
+          <Button
+            mode="outlined"
+            onPress={selectAll}
+            accessibilityLabel="Select all AM and PM across the week"
+            compact
+          >
+            Select All
+          </Button>
+          <Button
+            mode="outlined"
+            onPress={selectAM}
+            accessibilityLabel="Select all AM sessions across the week"
+            compact
+          >
+            AM
+          </Button>
+          <Button
+            mode="outlined"
+            onPress={selectPM}
+            accessibilityLabel="Select all PM sessions across the week"
+            compact
+          >
+            PM
+          </Button>
+        </View>
 
         <Card mode="elevated" style={styles.tableCard}>
           <View style={styles.tableHeader}>
@@ -130,18 +182,18 @@ export default function AvailabilityDays() {
             );
           })}
         </Card>
-        </ScrollView>
-        <SafeAreaView edges={['bottom']} style={[styles.footer, { backgroundColor: theme.colors.background }]}>
-          <Button
-            mode="contained"
-            onPress={onNext}
-            accessibilityLabel="Next: choose availability days"
-            contentStyle={{height: 48}}
-            disabled={selectedSessionsCount < 5}
-          >
-            Next
-          </Button>
-        </SafeAreaView>
+      </ScrollView>
+      <SafeAreaView edges={['bottom']} style={[styles.footer, { backgroundColor: theme.colors.background }]}>
+        <Button
+          mode="contained"
+          onPress={onNext}
+          accessibilityLabel="Next: choose availability days"
+          contentStyle={{ height: 48 }}
+          disabled={selectedSessionsCount < 5}
+        >
+          Next
+        </Button>
+      </SafeAreaView>
     </View>
   );
 }
@@ -150,44 +202,17 @@ const styles = StyleSheet.create({
   rootContainer: { flex: 1 },
   content: { padding: 20 },
   title: { marginBottom: 8 },
-  subtitle: { marginBottom: 8,},
+  subtitle: { marginBottom: 8, },
   alerttext: { marginBottom: 8 },
   infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   infoText: { marginLeft: 6, opacity: 0.8 },
   footer: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
-
-  // New styles for the table layout
-  tableCard: {
-    marginVertical: 6,
-    borderRadius: 12,
-    padding: 12,
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingBottom: 15,
-    // borderBottomWidth: 1,
-  },
-  tableHeaderDay: {
-    flex: 2, // Give more space for the day label
-  },
-  tableHeaderText: {
-    flex: 1,
-    textAlign: 'center',
-  },
-  tableRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-    // borderBottomWidth: 0.5,
-    // borderColor: T, // Lighter border for rows
-  },
-  dayLabel: {
-    flex: 2,
-  },
-  checkboxContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
+  quickSelectRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
+  tableCard: { marginVertical: 6, borderRadius: 12, padding: 12 },
+  tableHeader: { flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 15 },
+  tableHeaderDay: { flex: 2 },
+  tableHeaderText: { flex: 1, textAlign: 'center' },
+  tableRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', paddingVertical: 12 },
+  dayLabel: { flex: 2 },
+  checkboxContainer: { flex: 1, alignItems: 'center' },
 });

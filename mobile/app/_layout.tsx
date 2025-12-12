@@ -1,11 +1,13 @@
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { UserProvider, useUser } from "../context/UserContext";
+import { UserProvider, useUser } from "@/src/context/UserContext";
 import { PaperProvider } from 'react-native-paper';
 import { useAppTheme } from '../theme';
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,14 +36,16 @@ function Boot() {
 export default function RootLayout() {
   const theme = useAppTheme();
   console.log('RootLayout: Rendering...');
-  
+
   return (
-    <UserProvider>
-      <SafeAreaProvider>
-        <PaperProvider theme={theme}>
-          <Boot />
-        </PaperProvider>
-      </SafeAreaProvider>
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <SafeAreaProvider>
+          <PaperProvider theme={theme}>
+            <Boot />
+          </PaperProvider>
+        </SafeAreaProvider>
+      </UserProvider>
+    </QueryClientProvider>
   );
 }

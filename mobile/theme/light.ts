@@ -29,5 +29,13 @@ export const lightTheme = {
     error: '#FF3B30',
     success: '#34C759',
     warning: '#FFD60A', // For fills, use dark text on top
+
+    discipline: {
+      swim: '#00639B',     // Deep Accessible Blue
+      bike: '#C05400',     // Burnt Orange (Standard orange is too hard to read on white)
+      run: '#006D31',      // Forest Green
+      strength: '#6F43C0', // Deep Violet
+      other: '#5E6066',    // Slate Grey
+    },
   },
 };

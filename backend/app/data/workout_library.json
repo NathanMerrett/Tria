@@ -1,0 +1,95 @@
+{
+  "swim": [
+    {
+      "name": "Endurance Swim",
+      "intensity": "Zone 2 (Easy)",
+      "description": "Continuous swim at a steady, comfortable pace (Zone 2) to build aerobic endurance. Typically a longer distance or duration swim."
+    },
+    {
+      "name": "Threshold Swim Intervals",
+      "intensity": "Zone 4 (Threshold)",
+      "description": "Interval swim session with repeats at threshold pace (Zone 4) with rest between efforts. Improves sustained swim speed and endurance."
+    },
+    {
+      "name": "Speed Swim Intervals",
+      "intensity": "Zone 5 (VO2max)",
+      "description": "Short, fast swim repeats (e.g., 25–50m sprints) at high intensity (Zone 5) with ample rest. Develops top-end speed and power in the water."
+    },
+    {
+      "name": "Technique Drill Swim",
+      "intensity": "Zone 1–2 (Easy)",
+      "description": "Focus on form and efficiency with drill sets (kick, pull, etc.) and easy swimming. Low intensity to improve stroke technique and skills."
+    }
+  ],
+  "bike": [
+    {
+      "name": "Zone 2 Endurance Ride",
+      "intensity": "Zone 2 (Easy)",
+      "description": "Long steady ride at Zone 2 effort to build aerobic base endurance. Duration is scaled to the athlete (e.g., 1–3+ hours depending on level)."
+    },
+    {
+      "name": "Tempo Ride",
+      "intensity": "Zone 3 (Moderate)",
+      "description": "Continuous ride at a moderately hard tempo pace (Zone 3). Improves the ability to sustain faster speeds and builds muscular endurance."
+    },
+    {
+      "name": "Interval Ride",
+      "intensity": "Zone 4–5 (Hard Intervals)",
+      "description": "High-intensity cycling intervals (e.g., 3–8 minute efforts in Zone 4–5 with recovery periods). Builds cycling power, speed, and VO2max."
+    },
+    {
+      "name": "Hill Repeats Ride",
+      "intensity": "Zone 4–5 (Hard)",
+      "description": "Repeats on a climb or high resistance. Hard effort on the uphill (Zone 4–5), easy spin recovery on the flat/downhill. Develops leg strength and climbing power."
+    },
+    {
+      "name": "Recovery Spin",
+      "intensity": "Zone 1 (Very Easy)",
+      "description": "Easy, short spin at very low intensity (Zone 1) to promote recovery. Meant to loosen the legs and boost circulation with minimal fatigue."
+    }
+  ],
+  "run": [
+    {
+      "name": "Long Run",
+      "intensity": "Zone 2 (Easy)",
+      "description": "Long run at a comfortable Zone 2 pace to build aerobic endurance. Distance or duration scaled to experience (e.g., 30–90+ min)."
+    },
+    {
+      "name": "Tempo Run",
+      "intensity": "Zone 3–4 (Moderate-Hard)",
+      "description": "Steady run at a strong, controlled pace (around lactate threshold, Zone 3–4). Improves the ability to sustain a faster running pace."
+    },
+    {
+      "name": "Interval Run",
+      "intensity": "Zone 5 (Hard Intervals)",
+      "description": "Speed workout with fast run intervals (e.g., 400m or 1 km repeats at 5K race pace, Zone 5, with recovery jogs). Increases speed and VO2max."
+    },
+    {
+      "name": "Hill Repeats Run",
+      "intensity": "Zone 4–5 (Hard)",
+      "description": "Repeated uphill runs at high effort (Zone 4–5) with easy jog back down to recover. Builds leg strength, power, and running form."
+    },
+    {
+      "name": "Recovery Run",
+      "intensity": "Zone 1 (Very Easy)",
+      "description": "Short, very easy run to aid recovery (Zone 1 pace). Low-impact jog that helps blood flow; should feel relaxing and easy."
+    }
+  ],
+  "brick": [
+    {
+      "name": "Short Bike-Run Brick",
+      "intensity": "Zone 2 (Easy)",
+      "description": "Bike-run transition workout: finish a bike ride then go straight into a short easy run (e.g., 10–20 minutes at Zone 2). Introduces legs to running off the bike."
+    },
+    {
+      "name": "Long Brick Workout",
+      "intensity": "Zone 2–3 (Easy Bike + Moderate Run)",
+      "description": "Race simulation brick: a long endurance ride (Zone 2) immediately followed by a longer run, which may start easy and build to Zone 3. Builds stamina for combined bike-run effort."
+    },
+    {
+      "name": "Swim-Bike Brick",
+      "intensity": "Zone 2 (Easy)",
+      "description": "Swim-to-bike transition workout: complete a swim session and then quickly start an easy bike ride. Used occasionally to practice the swim-to-bike transition feeling."
+    }
+  ]
+}

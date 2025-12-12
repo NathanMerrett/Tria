@@ -26,5 +26,13 @@ export const darkTheme = {
     error: '#FF453A',
     success: '#32D74B',
     warning: '#FFD60A',
+
+    discipline: {
+      swim: '#3498db',     // Bright Blue
+      bike: '#e67e22',     // Bright Orange
+      run: '#2ecc71',      // Bright Green
+      strength: '#9b59b6', // Bright Purple
+      other: '#95a5a6',    // Grey
+    },
   },
 };
