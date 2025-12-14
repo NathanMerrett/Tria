@@ -5,27 +5,29 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useUser } from '@/src/context/UserContext';
 import { useTheme, Appbar } from 'react-native-paper';
 import { HeaderAvatar } from '@/src/features/athlete/components/HeaderAvatar';
-import { getHeaderTitle } from '@react-navigation/elements'; // Helper to get the active tab title
+import { getHeaderTitle } from '@react-navigation/elements';
 
-// 1. Create the Custom Header Component
+// 1. Custom Header Component
 const TabsHeader = ({ options, route }: { options: any; route: any }) => {
   const theme = useTheme();
+
+  // This helper prioritizes 'headerTitle' over 'title'
   const title = getHeaderTitle(options, route.name);
 
   return (
     <Appbar.Header
-      // Match the style of your ProfileStackHeader
       style={{ backgroundColor: theme.colors.background, elevation: 0 }}
     >
-      {/* Since this is the main Tab view, we usually don't need a BackAction. 
-         We render the Title and the Avatar.
+      {/* MOVED TO LEFT: 
+         We place the Avatar View before the Content. 
+         Changed paddingRight to paddingLeft/Right for balance.
       */}
-      <Appbar.Content title={title} />
-
-      {/* Container for the Avatar to ensure consistent spacing */}
-      <View style={{ paddingRight: 16 }}>
+      <View style={{ paddingHorizontal: 16 }}>
         <HeaderAvatar />
       </View>
+
+      {/* Title will now appear to the right of the avatar */}
+      <Appbar.Content title={title} />
     </Appbar.Header>
   );
 };
@@ -39,10 +41,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        // 2. REPLACEMENT: Use 'header' instead of 'headerRight'
         header: (props) => <TabsHeader {...props} />,
-
-        // Tab Bar Styling
         tabBarActiveTintColor: theme.colors.secondary,
         tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
         tabBarStyle: {
@@ -54,22 +53,26 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today', // This string is passed to props.options in TabsHeader
+          // SEPARATE THEM HERE:
+          headerTitle: 'Schedule', // The text at the top
+          tabBarLabel: 'Today',      // The text at the bottom
           tabBarIcon: ({ color, size }) => <FontAwesome5 name="sun" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="plan"
         options={{
-          title: 'Plan',
+          headerTitle: 'Your Schedule', // The text at the top
+          tabBarLabel: 'Plan',          // The text at the bottom
           tabBarIcon: ({ color, size }) => <FontAwesome5 name="calendar" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="support"
+        name="data"
         options={{
-          title: 'Support',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="question" size={size} color={color} />,
+          headerTitle: 'Analytics', // The text at the top
+          tabBarLabel: 'Data',      // The text at the bottom
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="chart-line" size={size} color={color} />,
         }}
       />
     </Tabs>

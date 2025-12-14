@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import * as workoutApi from '../api/workout';
+import * as workoutApi from '../api';
 
 export const useWorkout = (id: string) => {
     const queryKey = ['workout', id];

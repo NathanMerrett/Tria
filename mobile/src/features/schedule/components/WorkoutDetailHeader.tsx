@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import { Workout } from '@/src/types';
+import { WorkoutSummary } from '@/src/types';
+import { DISCIPLINE_COLORS } from '@/src/lib/constants';
+
 
 interface WorkoutDetailHeaderProps {
-    workout: Workout;
+    workout: WorkoutSummary;
 }
 
 export const WorkoutDetailHeader = ({ workout }: WorkoutDetailHeaderProps) => {
@@ -13,8 +15,8 @@ export const WorkoutDetailHeader = ({ workout }: WorkoutDetailHeaderProps) => {
 
     // Determine color based on discipline
     // Note: This logic parallels WorkoutCard.tsx. In a larger app, we'd move this to a utility.
-    const disciplineKey = workout.discipline as keyof typeof theme.colors.discipline;
-    const disciplineColor = theme.colors.discipline[disciplineKey] || theme.colors.discipline.other;
+    const disciplineKey = workout.discipline as keyof typeof DISCIPLINE_COLORS;
+    const disciplineColor = DISCIPLINE_COLORS[disciplineKey] || DISCIPLINE_COLORS.other;
 
     const dateStr = new Date(workout.date).toLocaleDateString(undefined, {
         weekday: 'long',

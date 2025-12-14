@@ -4,7 +4,7 @@ import { User as SupabaseUser } from '@supabase/supabase-js';
 // Re-export Supabase user for convenience
 export type AuthUser = SupabaseUser;
 
-export interface Workout {
+export interface WorkoutSummary {
     id: string;
     plan_id: string;
     title: string;
@@ -15,9 +15,19 @@ export interface Workout {
     completed: boolean;
 }
 
-export interface TrainingPlan {
+export interface CoachNote {
     id: string;
-    user_id: string;
+    plan_id: string;
+    date: string; // "2025-12-12"
+    content: string;
+}
+
+export interface CurrentActivePlan {
+    id: string;
     name: string;
-    status: 'active' | 'completed' | 'paused';
+    start_date: string;
+    race_date: string;
+    current_week: number;
+    total_weeks: number;
+    current_phase: string;
 }

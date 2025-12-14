@@ -1,12 +1,12 @@
 // src/features/schedule/components/WorkoutCard.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Workout } from '@/src/types';
-import { useTheme } from 'react-native-paper';
+import { View } from 'react-native';
+import { Card, Text, IconButton, useTheme } from 'react-native-paper';
+import { WorkoutSummary } from '@/src/types';
+import { DISCIPLINE_COLORS } from '@/src/lib/constants';
 
 interface WorkoutCardProps {
-    workout: Workout;
+    workout: WorkoutSummary;
     onToggle: (id: string, newStatus: boolean) => void;
     onPress: (id: string) => void;
 }
@@ -14,115 +14,71 @@ interface WorkoutCardProps {
 export const WorkoutCard = ({ workout, onToggle, onPress }: WorkoutCardProps) => {
     const theme = useTheme();
 
-    // 1. GET COLOR FROM THEME
-    // Cast strict keys or fallback to 'other'
-    const disciplineKey = workout.discipline as keyof typeof theme.colors.discipline;
-    const stripeColor = theme.colors.discipline[disciplineKey] || theme.colors.discipline.other;
-
-    const dateStr = new Intl.DateTimeFormat('en-GB', {
-        weekday: 'long', day: 'numeric', month: 'short'
-    }).format(new Date(workout.date)).toLowerCase();
+    const disciplineKey = workout.discipline as keyof typeof DISCIPLINE_COLORS;
+    const stripeColor = DISCIPLINE_COLORS[disciplineKey] || DISCIPLINE_COLORS.default;
 
     return (
-        <View style={[
-            styles.cardContainer,
-            {
+        <Card
+            style={{
+                marginBottom: 16,
+                // 1. Less Cornering (Standard is usually 16, reduced to 8)
+                borderRadius: 8,
+                borderLeftWidth: 6,
                 borderLeftColor: stripeColor,
                 backgroundColor: theme.colors.surface,
-                // 2. APPLY THEME BORDER HERE
-                borderColor: theme.colors.outline,
-                borderWidth: 1,
-            }
-        ]}>
+            }}
+            mode="elevated"
+            onPress={() => onPress(workout.id)}
+        >
+            {/* 2. More Padding: Increased vertical to 24 for "more space" */}
+            <Card.Content style={{ paddingVertical: 24, paddingHorizontal: 20 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
 
-            {/* AREA 1: Body */}
-            <Pressable
-                style={styles.clickableBody}
-                onPress={() => onPress(workout.id)}
-                android_ripple={{ color: theme.colors.onSurface }}
-            >
-                <View style={styles.content}>
-                    <Text style={[styles.meta, { color: theme.colors.onSurfaceVariant }]}>
-                        {dateStr} • {workout.duration_mins} mins
-                    </Text>
+                    {/* TEXT CONTENT */}
+                    <View style={{ flex: 1, paddingRight: 12 }}>
+                        <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>
+                            {workout.title}
+                        </Text>
 
-                    <Text style={[styles.title, { color: theme.colors.onSurface }]} numberOfLines={1}>
-                        {workout.title}
-                    </Text>
+                        {/* Added marginTop to spacing out the lines vertically */}
+                        <Text
+                            variant="labelLarge"
+                            style={{
+                                color: theme.colors.primary,
+                                marginTop: 8
+                            }}
+                        >
+                            {workout.duration_mins} mins
+                        </Text>
 
-                    <Text style={[styles.desc, { color: theme.colors.onSurfaceVariant }]} numberOfLines={1}>
-                        {workout.description}
-                    </Text>
+                        <Text
+                            variant="bodyMedium"
+                            numberOfLines={1}
+                            style={{
+                                color: theme.colors.onSurfaceVariant,
+                                marginTop: 8
+                            }}
+                        >
+                            {workout.description}
+                        </Text>
+                    </View>
+
+                    {/* CHECKBOX */}
+                    <View style={{
+                        // Negative margins to counteract IconButton's internal padding
+                        // ensuring it looks visually aligned with the Title text
+                        marginTop: -12,
+                        marginRight: -12
+                    }}>
+                        <IconButton
+                            icon={workout.completed ? "checkbox-marked" : "checkbox-blank-outline"}
+                            iconColor={workout.completed ? stripeColor : theme.colors.onSurfaceDisabled}
+                            size={30}
+                            onPress={() => onToggle(workout.id, !workout.completed)}
+                        />
+                    </View>
                 </View>
-            </Pressable>
-
-            {/* AREA 2: Checkbox */}
-            <Pressable
-                style={styles.checkboxArea}
-                onPress={() => onToggle(workout.id, !workout.completed)}
-                hitSlop={20}
-            >
-                <Ionicons
-                    name={workout.completed ? "checkbox" : "square-outline"}
-                    size={32}
-                    color={workout.completed ? stripeColor : theme.colors.onSurfaceDisabled}
-                />
-            </Pressable>
-        </View>
+            </Card.Content>
+        </Card>
     );
 };
-
-const styles = StyleSheet.create({
-    cardContainer: {
-        flexDirection: 'row',
-        borderRadius: 16,
-        marginBottom: 16,
-        borderLeftWidth: 6,
-
-        // Shadow (subtle on dark mode, but good to keep)
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2, // Slightly higher for dark mode visibility
-        shadowRadius: 6,
-        elevation: 4,
-        overflow: 'hidden',
-    },
-    clickableBody: {
-        flex: 1,
-        paddingVertical: 24,
-        paddingHorizontal: 20,
-        justifyContent: 'center',
-    },
-    checkboxArea: {
-        width: 70,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    divider: {
-        width: 1,
-        height: '70%',
-        marginRight: 14,
-        opacity: 0.5, // Make the divider slightly subtle
-    },
-    content: {
-        justifyContent: 'center',
-    },
-    meta: {
-        fontSize: 13,
-        fontWeight: '600',
-        marginBottom: 12,
-        textTransform: 'lowercase',
-        letterSpacing: 0.5,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: '700',
-        marginBottom: 6,
-        lineHeight: 24,
-    },
-    desc: {
-        fontSize: 14,
-        lineHeight: 20,
-    },
-});
