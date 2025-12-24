@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, SafeAreaView, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useTheme } from 'react-native-paper';
-import { useWorkout } from '@/src/features/schedule/hooks/useWorkout';
-import { WorkoutDetailHeader } from '@/src/features/schedule/components/WorkoutDetailHeader';
+import { useWorkout } from '@/src/features/plan/hooks/useWorkoutDetail';
+import { WorkoutDetailHeader } from '@/src/features/plan/components/WorkoutDetailHeader';
 
 export default function WorkoutDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();

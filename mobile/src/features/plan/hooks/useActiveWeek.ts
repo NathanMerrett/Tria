@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { startOfWeek, endOfWeek, format, parseISO } from 'date-fns';
+import { startOfWeek, endOfWeek, format } from 'date-fns';
 import { useUser } from '@/src/context/UserContext'; // Assuming you have this
-import { WorkoutSummary, CoachNote } from '@/src/types';
+import { WorkoutSummary } from '@/src/types';
 import * as scheduleApi from '../api';
 
 export const useWeekSnapshot = (selectedDate: Date) => {

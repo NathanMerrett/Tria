@@ -3,11 +3,11 @@ import { View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet } from 'rea
 import { useRouter } from 'expo-router';
 import { useTheme, Text, Chip } from 'react-native-paper';
 
-import { useWeekSnapshot } from '@/src/features/schedule/hooks/useWeekSnapshot';
-import { WorkoutCard } from '@/src/features/schedule/components/WorkoutCard';
-import { NoActivePlanState } from '@/src/features/schedule/components/NoActivePlanState';
-import { WeekCalendar } from '@/src/features/schedule/components/WeekCalendar';
-import { CoachesNote } from '@/src/features/schedule/components/CoachesNote';
+import { useWeekSnapshot } from '@/src/features/plan/hooks/useActiveWeek';
+import { WorkoutCard } from '@/src/features/plan/components/TodayScreen/WorkoutCard';
+import { NoActivePlanState } from '@/src/features/plan/components/NoActivePlanState';
+import { WeekCalendar } from '@/src/features/plan/components/TodayScreen/WeekCalendar';
+import { CoachesNote } from '@/src/features/plan/components/CoachesNote';
 
 export default function IndexScreen() {
   const router = useRouter();

@@ -1,10 +1,10 @@
 // src/lib/fixtures/workouts.ts
-import { CoachNote } from '@/src/types';
+import { CoachDayNote } from '@/src/types';
 import { addDays, format } from 'date-fns';
 
 const getDate = (base: Date, offset: number) => format(addDays(base, offset), 'yyyy-MM-dd');
 
-export const generateIronmanCoachNotes = (planId: string, startDate: Date = new Date()): CoachNote[] => [
+export const generateIronmanCoachNotes = (planId: string, startDate: Date = new Date()): CoachDayNote[] => [
     // --- Day 1: Double Workout Day ---
     {
         id: 'note-im-1',
