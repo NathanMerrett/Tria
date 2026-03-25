@@ -8,12 +8,13 @@ import {
   Pressable,
 } from 'react-native';
 import { Text, TextInput, Divider, useTheme } from 'react-native-paper';
-import { AppButton } from '@/shared/components/app-button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
 
-import { GoogleIcon } from '@/features/auth/components/google-icon';
-import { StravaIcon } from '@/features/auth/components/strava-icon';
+import { AppButton } from '@/shared/components/app-button';
+import { FormField } from '@/shared/components/form-field';
+import { GoogleIcon } from '@/shared/components/icons/google-icon';
+import { StravaIcon } from '@/shared/components/icons/strava-icon';
 import { signInWithEmail, signInWithGoogle, signInWithStrava } from '@/features/auth/lib/auth';
 import { Fonts } from '@/shared/constants/theme';
 
@@ -72,29 +73,20 @@ export default function SignInScreen() {
 
           {/* Form */}
           <View style={styles.form}>
-            <View style={styles.fieldGroup}>
-              <Text variant="labelSmall" style={[styles.fieldLabel, { color: colors.onSurfaceVariant }]}>
-                Email
-              </Text>
-              <TextInput
-                value={email}
-                onChangeText={setEmail}
-                mode="outlined"
-                placeholder="name@example.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                left={<TextInput.Icon icon="at" color={() => colors.onSurfaceVariant} />}
-                style={styles.input}
-                outlineStyle={styles.inputOutline}
-              />
-            </View>
+            <FormField
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="name@example.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              left={<TextInput.Icon icon="at" color={() => colors.onSurfaceVariant} />}
+            />
 
-            <View style={styles.fieldGroup}>
-              <View style={styles.labelRow}>
-                <Text variant="labelSmall" style={[styles.fieldLabel, { color: colors.onSurfaceVariant }]}>
-                  Password
-                </Text>
+            <FormField
+              label="Password"
+              rightLabel={
                 <Link href="/(auth)/forgot-password" asChild>
                   <Pressable>
                     <Text variant="labelSmall" style={{ color: colors.primary, fontFamily: Fonts.label }}>
@@ -102,26 +94,21 @@ export default function SignInScreen() {
                     </Text>
                   </Pressable>
                 </Link>
-              </View>
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                mode="outlined"
-                placeholder="••••••••"
-                secureTextEntry={!showPassword}
-                autoComplete="password"
-                left={<TextInput.Icon icon="lock-outline" color={() => colors.onSurfaceVariant} />}
-                right={
-                  <TextInput.Icon
-                    icon={showPassword ? 'eye-off' : 'eye'}
-                    color={() => colors.onSurfaceVariant}
-                    onPress={() => setShowPassword((v) => !v)}
-                  />
-                }
-                style={styles.input}
-                outlineStyle={styles.inputOutline}
-              />
-            </View>
+              }
+              value={password}
+              onChangeText={setPassword}
+              placeholder="••••••••"
+              secureTextEntry={!showPassword}
+              autoComplete="password"
+              left={<TextInput.Icon icon="lock-outline" color={() => colors.onSurfaceVariant} />}
+              right={
+                <TextInput.Icon
+                  icon={showPassword ? 'eye-off' : 'eye'}
+                  color={() => colors.onSurfaceVariant}
+                  onPress={() => setShowPassword((v) => !v)}
+                />
+              }
+            />
 
             {error && (
               <Text variant="bodySmall" style={{ color: colors.error }}>
@@ -225,24 +212,6 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 16,
-  },
-  fieldGroup: {
-    gap: 6,
-  },
-  fieldLabel: {
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-  },
-  labelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  input: {
-    backgroundColor: 'transparent',
-  },
-  inputOutline: {
-    borderRadius: 8,
   },
   loginButton: {
     marginTop: 4,
