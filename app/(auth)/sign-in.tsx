@@ -1,32 +1,37 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Divider, Snackbar, Text } from 'react-native-paper';
+import { useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Pressable,
+} from 'react-native';
+import { Text, TextInput, Divider, useTheme } from 'react-native-paper';
+import { AppButton } from '@/shared/components/app-button';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link } from 'expo-router';
 
-import { SocialSignInButton } from '@/features/auth/components/social-sign-in-button';
-import { signInWithGoogle, signInWithStrava } from '@/features/auth/lib/auth';
+import { GoogleIcon } from '@/features/auth/components/google-icon';
+import { StravaIcon } from '@/features/auth/components/strava-icon';
+import { signInWithEmail, signInWithGoogle, signInWithStrava } from '@/features/auth/lib/auth';
+import { Fonts } from '@/shared/constants/theme';
+
+type LoadingState = 'email' | 'google' | 'strava' | null;
 
 export default function SignInScreen() {
-  const [loading, setLoading] = useState<'google' | 'strava' | null>(null);
+  const { colors } = useTheme();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState<LoadingState>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleGoogle() {
-    setLoading('google');
+  async function handleAuth(provider: LoadingState, fn: () => Promise<void>) {
+    setLoading(provider);
     setError(null);
     try {
-      await signInWithGoogle();
-    } catch (e: any) {
-      setError(e?.message ?? 'Sign in failed. Please try again.');
-    } finally {
-      setLoading(null);
-    }
-  }
-
-  async function handleStrava() {
-    setLoading('strava');
-    setError(null);
-    try {
-      await signInWithStrava();
+      await fn();
     } catch (e: any) {
       setError(e?.message ?? 'Sign in failed. Please try again.');
     } finally {
@@ -36,48 +41,153 @@ export default function SignInScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inner}>
-        <View style={styles.hero}>
-          <Text style={styles.logo}>
-            Tria
-          </Text>
-          <Text variant="bodyLarge" style={styles.tagline}>
-            Your triathlon training companion
-          </Text>
-        </View>
-
-        <View style={styles.authCard}>
-          <Text variant="headlineSmall" style={styles.heading}>
-            Sign in to get started
-          </Text>
-<View style={styles.buttons}>
-            <SocialSignInButton
-              provider="google"
-              onPress={handleGoogle}
-              loading={loading === 'google'}
-            />
-            <Divider style={styles.divider} />
-            <SocialSignInButton
-              provider="strava"
-              onPress={handleStrava}
-              loading={loading === 'strava'}
-            />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.flex}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Branding */}
+          <View style={styles.header}>
+            <Text style={[styles.brand, { color: colors.primary }]}>Tria</Text>
+            <Text variant="bodyMedium" style={{ color: colors.onSurfaceVariant }}>
+              {'ENGINEERED FOR THE '}
+              <Text variant="bodyMedium" style={{ color: colors.primary }}>ATHLETE</Text>
+              {'.'}
+            </Text>
           </View>
 
-          <Text variant="bodySmall" style={styles.terms}>
-            By signing in you agree to our Terms of Service and Privacy Policy.
-          </Text>
-        </View>
-      </View>
+          {/* Welcome */}
+          <View style={styles.welcome}>
+            <Text style={[styles.welcomeTitle, { color: colors.onBackground }]}>
+              Welcome Back
+            </Text>
+            <Text variant="bodyMedium" style={{ color: colors.onSurfaceVariant }}>
+              Log in to sync your performance data.
+            </Text>
+          </View>
 
-      <Snackbar
-        visible={!!error}
-        onDismiss={() => setError(null)}
-        duration={4000}
-        action={{ label: 'Dismiss', onPress: () => setError(null) }}
-      >
-        {error}
-      </Snackbar>
+          {/* Form */}
+          <View style={styles.form}>
+            <View style={styles.fieldGroup}>
+              <Text variant="labelSmall" style={[styles.fieldLabel, { color: colors.onSurfaceVariant }]}>
+                Email
+              </Text>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                mode="outlined"
+                placeholder="name@example.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                left={<TextInput.Icon icon="at" color={() => colors.onSurfaceVariant} />}
+                style={styles.input}
+                outlineStyle={styles.inputOutline}
+              />
+            </View>
+
+            <View style={styles.fieldGroup}>
+              <View style={styles.labelRow}>
+                <Text variant="labelSmall" style={[styles.fieldLabel, { color: colors.onSurfaceVariant }]}>
+                  Password
+                </Text>
+                <Link href="/(auth)/forgot-password" asChild>
+                  <Pressable>
+                    <Text variant="labelSmall" style={{ color: colors.primary, fontFamily: Fonts.label }}>
+                      FORGOT?
+                    </Text>
+                  </Pressable>
+                </Link>
+              </View>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                mode="outlined"
+                placeholder="••••••••"
+                secureTextEntry={!showPassword}
+                autoComplete="password"
+                left={<TextInput.Icon icon="lock-outline" color={() => colors.onSurfaceVariant} />}
+                right={
+                  <TextInput.Icon
+                    icon={showPassword ? 'eye-off' : 'eye'}
+                    color={() => colors.onSurfaceVariant}
+                    onPress={() => setShowPassword((v) => !v)}
+                  />
+                }
+                style={styles.input}
+                outlineStyle={styles.inputOutline}
+              />
+            </View>
+
+            {error && (
+              <Text variant="bodySmall" style={{ color: colors.error }}>
+                {error}
+              </Text>
+            )}
+
+            <AppButton
+              onPress={() => handleAuth('email', () => signInWithEmail(email, password))}
+              loading={loading === 'email'}
+              disabled={!!loading}
+              style={styles.loginButton}
+            >
+              Login →
+            </AppButton>
+          </View>
+
+          {/* Social */}
+          <View style={styles.social}>
+            <View style={styles.dividerRow}>
+              <Divider style={styles.dividerLine} />
+              <Text variant="labelSmall" style={[styles.dividerLabel, { color: colors.onSurfaceVariant }]}>
+                OR CONTINUE WITH
+              </Text>
+              <Divider style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.socialButtons}>
+              <AppButton
+                variant="outlined"
+                onPress={() => handleAuth('strava', signInWithStrava)}
+                loading={loading === 'strava'}
+                disabled={!!loading}
+                icon={() => <StravaIcon size={18} />}
+                style={styles.socialButton}
+              >
+                Strava
+              </AppButton>
+              <AppButton
+                variant="outlined"
+                onPress={() => handleAuth('google', signInWithGoogle)}
+                loading={loading === 'google'}
+                disabled={!!loading}
+                icon={() => <GoogleIcon size={18} />}
+                style={styles.socialButton}
+              >
+                Google
+              </AppButton>
+            </View>
+          </View>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text variant="bodySmall" style={{ color: colors.onSurfaceVariant }}>
+              New to Tria?{' '}
+            </Text>
+            <Link href="/(auth)/sign-up" asChild>
+              <Pressable>
+                <Text variant="bodySmall" style={{ color: colors.primary, fontFamily: Fonts.label }}>
+                  CREATE ACCOUNT
+                </Text>
+              </Pressable>
+            </Link>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -85,54 +195,82 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
   },
-  inner: {
+  flex: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  scroll: {
     paddingHorizontal: 24,
-    gap: 40,
+    paddingTop: 32,
+    paddingBottom: 40,
+    gap: 32,
   },
-  hero: {
-    alignItems: 'center',
-    gap: 8,
+  header: {
+    gap: 6,
   },
-  logo: {
-    color: '#38BDF8',
-    fontWeight: '800',
+  brand: {
+    fontFamily: Fonts.display,
+    fontSize: 48,
+    lineHeight: 56,
     letterSpacing: -1,
-    fontSize: 56,
-    lineHeight: 68,
   },
-  tagline: {
-    color: '#94A3B8',
-    textAlign: 'center',
+  welcome: {
+    gap: 6,
   },
-  authCard: {
-    backgroundColor: '#1E293B',
-    borderRadius: 20,
-    padding: 24,
+  welcomeTitle: {
+    fontFamily: Fonts.heading,
+    fontSize: 32,
+    lineHeight: 40,
+    letterSpacing: -0.5,
+  },
+  form: {
+    gap: 16,
+  },
+  fieldGroup: {
+    gap: 6,
+  },
+  fieldLabel: {
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  labelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  input: {
+    backgroundColor: 'transparent',
+  },
+  inputOutline: {
+    borderRadius: 8,
+  },
+  loginButton: {
+    marginTop: 4,
+  },
+  social: {
+    gap: 16,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  dividerLine: {
+    flex: 1,
+  },
+  dividerLabel: {
+    letterSpacing: 1,
+  },
+  socialButtons: {
+    flexDirection: 'row',
     gap: 12,
   },
-  heading: {
-    color: '#F8FAFC',
-    fontWeight: '700',
+  socialButton: {
+    flex: 1,
   },
-  subheading: {
-    color: '#94A3B8',
-    marginBottom: 4,
-  },
-  buttons: {
-    gap: 4,
-    marginVertical: 8,
-  },
-  divider: {
-    marginVertical: 4,
-    backgroundColor: '#334155',
-  },
-  terms: {
-    color: '#64748B',
-    textAlign: 'center',
-    marginTop: 4,
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

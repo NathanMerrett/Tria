@@ -48,6 +48,16 @@ types/                      — database.ts (generated), training.ts, user.ts
 
 New features go in `features/<name>/` with `components/`, `lib/`, `store/` subfolders as needed. Only put things in `shared/` if they are genuinely used by 2+ features.
 
+## Global styling
+
+All theming lives in `shared/constants/theme.ts`:
+
+- `AppDarkTheme` / `AppLightTheme` — MD3 themes with custom color tokens (primary `#FF5722`, secondary `#C45252`, tertiary `#A15AB8`)
+- Dark mode is hardcoded as the default in `app/_layout.tsx` — no system color scheme detection
+- Fonts are loaded via `useFonts` in `_layout.tsx`: **Lexend** (display/headlines) + **Inter** (body/labels), wired into MD3 typescale via `configureFonts`
+- `Fonts` export provides family name strings for manual `fontFamily` overrides
+- Access colors in components via `useTheme()` from react-native-paper — never hardcode color values
+
 ## Key conventions
 
 - `session?.user` — never store `user` separately from `session` in Zustand

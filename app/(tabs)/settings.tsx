@@ -1,11 +1,12 @@
 import { Alert, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, Button, List } from 'react-native-paper';
+import { Text, Card, Button, List, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStore } from '@/features/auth/store/auth-store';
 import { signOut } from '@/features/auth/lib/auth';
 
 export default function SettingsScreen() {
+  const { colors } = useTheme();
   const user = useAuthStore((s) => s.session?.user);
 
   function handleSignOut() {
@@ -33,7 +34,7 @@ export default function SettingsScreen() {
             />
           </Card.Content>
           <Card.Actions>
-            <Button mode="text" textColor="#DC2626" onPress={handleSignOut}>
+            <Button mode="text" textColor={colors.error} onPress={handleSignOut}>
               Sign Out
             </Button>
           </Card.Actions>
@@ -46,7 +47,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
   },
   scroll: {
     padding: 20,

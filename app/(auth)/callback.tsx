@@ -11,9 +11,7 @@ export default function CallbackScreen() {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" />
-      <Text variant="bodyMedium" style={styles.text}>
-        Completing sign in…
-      </Text>
+      <Text variant="bodyMedium">Completing sign in…</Text>
     </View>
   );
 }
@@ -24,9 +22,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 16,
-    backgroundColor: '#0F172A',
-  },
-  text: {
-    color: '#94A3B8',
   },
 });

@@ -1,15 +1,28 @@
+import { useEffect, useRef } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef } from 'react';
-import { useColorScheme } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+} from '@expo-google-fonts/inter';
+import {
+  Lexend_500Medium,
+  Lexend_600SemiBold,
+  Lexend_700Bold,
+} from '@expo-google-fonts/lexend';
 import 'react-native-reanimated';
 
 import { useAuthStore } from '@/features/auth/store/auth-store';
-import { AppDarkTheme, AppLightTheme } from '@/shared/constants/theme';
+import { AppDarkTheme } from '@/shared/constants/theme';
 import { queryClient } from '@/shared/lib/query-client';
 import { supabase } from '@/shared/lib/supabase';
+
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -53,14 +66,28 @@ function AuthGate() {
 }
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? AppDarkTheme : AppLightTheme;
+  const theme = AppDarkTheme;
+
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Lexend_500Medium,
+    Lexend_600SemiBold,
+    Lexend_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
 
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={theme}>
         <AuthGate />
-        <Stack>
+        <Stack screenOptions={{ contentStyle: { backgroundColor: theme.colors.background } }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
