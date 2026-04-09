@@ -42,7 +42,7 @@ shared/                     — cross-feature utilities, no feature-specific log
   hooks/                    — useColorScheme, useThemeColor
   lib/                      — supabase.ts, query-client.ts
 
-supabase/                   — Supabase CLI only (config.toml, migrations)
+supabase/                   — Supabase CLI only (config.toml, migrations, edge functions)
 types/                      — database.ts (generated), training.ts, user.ts
 ```
 

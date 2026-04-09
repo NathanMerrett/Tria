@@ -1,15 +1,15 @@
-import { useEffect, useRef } from 'react';
-import { useRouter, useSegments, Stack } from 'expo-router';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
-import { QueryClientProvider } from '@tanstack/react-query';
 import 'react-native-reanimated';
 
-import { supabase } from '@/shared/lib/supabase';
-import { queryClient } from '@/shared/lib/query-client';
 import { useAuthStore } from '@/features/auth/store/auth-store';
-import { AppLightTheme, AppDarkTheme } from '@/shared/constants/theme';
+import { AppDarkTheme, AppLightTheme } from '@/shared/constants/theme';
+import { queryClient } from '@/shared/lib/query-client';
+import { supabase } from '@/shared/lib/supabase';
 
 export const unstable_settings = {
   anchor: '(tabs)',

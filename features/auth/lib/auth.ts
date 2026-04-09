@@ -1,5 +1,5 @@
-import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 
 import { supabase } from '@/shared/lib/supabase';
 
