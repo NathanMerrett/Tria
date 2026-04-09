@@ -1,7 +1,5 @@
 -- ============================================================================
 -- users table
--- Stores User information. Triggered row creation when authentication row is
--- created. 
 -- ============================================================================
 create table public.users (
   id              uuid        primary key references auth.users(id) on delete cascade,
@@ -26,15 +24,7 @@ comment on table public.users is 'User profiles, synced from auth.users on signu
 comment on column public.users.trial_started_at is 'Set when the user creates their first plan. Null means trial has not started.';
 
 -- ============================================================================
--- 2. Entitlement helper function
---    Returns true if the user has premium access (active subscription OR
---    within 28-day trial window). Use in RLS policies and client-side logic.
---
---    Usage in RLS policies:
---      using (public.has_premium_access(auth.uid()))
---
---    Usage from client:
---      select public.has_premium_access(auth.uid());
+-- Helper Functions
 -- ============================================================================
 create or replace function public.has_premium_access(user_id uuid)
 returns boolean
@@ -57,7 +47,7 @@ as $$
 $$;
 
 -- ============================================================================
--- 3. Attach the shared updated_at trigger
+-- Triggers
 -- ============================================================================
 create trigger on_users_updated
   before update on public.users
@@ -82,7 +72,7 @@ create policy "Users can update own profile"
   with check ((select auth.uid()) = id);
 
 -- ============================================================================
--- 5. Indexes
+-- Indexes
 -- ============================================================================
 create index idx_users_email on public.users (email);
 create index idx_users_subscription_status on public.users (subscription_status);

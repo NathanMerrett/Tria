@@ -47,11 +47,19 @@ alter table public.integrations enable row level security;
 -- Users can read their own row
 create policy "Users can view own integrations"
   on public.integrations
-  for select using ((select auth.uid()) = id);
+  for select using ((select auth.uid()) = user_id);
 
 -- Users can update their own row
 create policy "Users can update own integrations"
   on public.integrations
   for update
-  using ((select auth.uid()) = id)
-  with check ((select auth.uid()) = id);
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+create policy "Users can insert own integrations"
+on public.integrations for insert
+with check ((select auth.uid()) = user_id);
+
+create policy "Users can delete own integrations"
+on public.integrations for delete
+using ((select auth.uid()) = user_id);
