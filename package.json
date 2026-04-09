@@ -10,7 +10,10 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "seed": "dotenv -e .env -- npx tsx seed.ts"
+    "seed": "dotenv -e .env -- npx tsx seed.ts",
+    "lint:fix": "expo lint --fix",
+    "seed": "dotenv -e .env -- tsx scripts/seed-workouts.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -54,9 +57,6 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@snaplet/copycat": "^6.0.0",
-    "@snaplet/seed": "^0.98.0",
-    "@types/pg": "^8.20.0",
     "@types/react": "~19.1.0",
     "@types/react-native": "^0.72.8",
     "dotenv-cli": "^11.0.0",

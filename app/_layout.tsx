@@ -34,7 +34,11 @@ function AuthGate() {
     });
 
     return () => listener.subscription.unsubscribe();
+<<<<<<< HEAD
   }, []);
+=======
+  }, [setSession, setLoading]);
+>>>>>>> 1fa27b0fc843f651e56f2e04cb42f6fd31552afc
 
   // Handle redirects — only re-run when auth state changes, not on every navigation
   useEffect(() => {
@@ -47,7 +51,11 @@ function AuthGate() {
     } else {
       if (inAuth) router.replace('/(tabs)');
     }
+<<<<<<< HEAD
   }, [session, isLoading]);
+=======
+  }, [session, isLoading, router]);
+>>>>>>> 1fa27b0fc843f651e56f2e04cb42f6fd31552afc
 
   return null;
 }

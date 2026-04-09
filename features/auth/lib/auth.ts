@@ -55,4 +55,3 @@ export async function refreshSession() {
   if (error) throw error;
   return data.session;
 }
-

@@ -1,0 +1,2 @@
+npx tsc --noEmit
+npm audit --audit-level=high

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Text, Divider, Snackbar } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Divider, Snackbar, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SocialSignInButton } from '@/features/auth/components/social-sign-in-button';
