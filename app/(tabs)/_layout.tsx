@@ -1,9 +1,8 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Text, useColorScheme } from 'react-native';
+import { Text } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 import { HapticTab } from '@/shared/components/haptic-tab';
-import { Colors } from '@/shared/constants/theme';
 
 const ICONS: Record<string, string> = {
   index: '📅',
@@ -18,14 +17,17 @@ function TabIcon({ name, color }: { name: string; color: string }) {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colors } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.onSurfaceVariant,
+        tabBarStyle: { backgroundColor: colors.surface },
         headerShown: false,
         tabBarButton: HapticTab,
+        sceneStyle: { backgroundColor: colors.background },
       }}
     >
       <Tabs.Screen

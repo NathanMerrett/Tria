@@ -4,8 +4,10 @@ A triathlon training app — Runna, but for triathlons.
 
 ## Prerequisites
 
-- Node.js 18+
-- Xcode (for iOS builds)
+- **Node.js 18+**
+- **Xcode** — install from the Mac App Store (required for iOS builds)
+- **Xcode Command Line Tools** — run `xcode-select --install` after installing Xcode
+- **CocoaPods** — run `brew install cocoapods` (required for native dependencies)
 - A Supabase project with the schema applied
 
 ## Setup
