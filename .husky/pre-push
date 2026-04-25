@@ -1,2 +1,2 @@
 npx tsc --noEmit
-npm audit --audit-level=critical
+npm audit --audit-level=high
