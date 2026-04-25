@@ -59,7 +59,7 @@ function AuthGate() {
     if (isLoading) return;
 
     const inAuth = segmentsRef.current[0] === '(auth)';
-    const onResetScreen = segmentsRef.current[1] === 'reset-password';
+    const onResetScreen = segmentsRef.current.at(1) === 'reset-password';
 
     if (recoveryMode) {
       if (!onResetScreen) router.replace('/(auth)/reset-password');
