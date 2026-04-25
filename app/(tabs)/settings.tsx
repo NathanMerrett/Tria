@@ -1,9 +1,11 @@
 import { Alert, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, Button, List, useTheme } from 'react-native-paper';
+import { Text, Card, List, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useAuthStore } from '@/features/auth/store/auth-store';
 import { signOut } from '@/features/auth/lib/auth';
+import { useAuthStore } from '@/features/auth/store/auth-store';
+import { AppButton } from '@/shared/components/app-button';
+import { Fonts } from '@/shared/constants/theme';
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
@@ -21,9 +23,9 @@ export default function SettingsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.flex}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text variant="headlineMedium" style={styles.title}>Settings</Text>
+        <Text style={[styles.title, { color: colors.onBackground }]}>Settings</Text>
 
         <Card style={styles.card} mode="outlined">
           <Card.Title title="Account" />
@@ -34,9 +36,14 @@ export default function SettingsScreen() {
             />
           </Card.Content>
           <Card.Actions>
-            <Button mode="text" textColor={colors.error} onPress={handleSignOut}>
+            <AppButton
+              variant="outlined"
+              onPress={handleSignOut}
+              style={{ borderColor: colors.error }}
+              labelStyle={{ color: colors.error }}
+            >
               Sign Out
-            </Button>
+            </AppButton>
           </Card.Actions>
         </Card>
       </ScrollView>
@@ -45,16 +52,17 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  flex: { flex: 1 },
   scroll: {
-    padding: 20,
+    padding: 24,
     gap: 16,
     paddingBottom: 40,
   },
   title: {
-    fontWeight: '700',
+    fontFamily: Fonts.heading,
+    fontSize: 32,
+    lineHeight: 40,
+    letterSpacing: -0.5,
     marginBottom: 4,
   },
   card: {

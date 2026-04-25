@@ -1,16 +1,20 @@
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { supabase } from '@/shared/lib/supabase';
+
+// In Expo Go the custom scheme isn't registered — use the exp+ scheme instead.
+// In a native build, use the real app scheme.
+const redirectUri =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient
+    ? 'exp+tria://callback'
+    : AuthSession.makeRedirectUri({ scheme: 'tria', path: 'callback' });
 
 WebBrowser.maybeCompleteAuthSession();
 
-async function signInWithProvider(provider: 'google' | 'strava') {
-  const redirectUri = AuthSession.makeRedirectUri({
-    scheme: 'tria',
-    path: 'callback',
-  });
+export type LoadingState = 'email' | 'google' | 'strava' | null;
 
+async function signInWithProvider(provider: 'google' | 'strava') {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: provider as any,
     options: {
@@ -36,13 +40,16 @@ export async function signInWithStrava() {
   return signInWithProvider('strava');
 }
 
+export async function exchangeCode(code: string) {
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) throw error;
+}
+
 export async function handleOAuthCallback(url: string) {
-  // Extract just the code parameter — exchangeCodeForSession needs the code, not the full URL
   const params = new URLSearchParams(url.split('?')[1] ?? '');
   const code = params.get('code');
   if (!code) throw new Error('No code found in OAuth callback URL');
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) throw error;
+  return exchangeCode(code);
 }
 
 export async function signInWithEmail(email: string, password: string) {
@@ -60,7 +67,12 @@ export async function signUpWithEmail(email: string, password: string, fullName:
 }
 
 export async function resetPassword(email: string) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUri });
+  if (error) throw error;
+}
+
+export async function updatePassword(password: string) {
+  const { error } = await supabase.auth.updateUser({ password });
   if (error) throw error;
 }
 

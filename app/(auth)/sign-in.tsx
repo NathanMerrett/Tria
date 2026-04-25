@@ -1,47 +1,34 @@
+import { Link } from 'expo-router';
 import { useState } from 'react';
 import {
-  View,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
-import { Text, TextInput, Divider, useTheme } from 'react-native-paper';
+import { HelperText, Text, TextInput, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
 
+import { signInWithEmail, signInWithGoogle, signInWithStrava } from '@/features/auth/lib/auth';
+import { useAuthAction } from '@/features/auth/hooks/use-auth-action';
 import { AppButton } from '@/shared/components/app-button';
+import { AuthDivider } from '@/shared/components/auth-divider';
 import { FormField } from '@/shared/components/form-field';
 import { GoogleIcon } from '@/shared/components/icons/google-icon';
 import { StravaIcon } from '@/shared/components/icons/strava-icon';
-import { signInWithEmail, signInWithGoogle, signInWithStrava } from '@/features/auth/lib/auth';
 import { Fonts } from '@/shared/constants/theme';
-
-type LoadingState = 'email' | 'google' | 'strava' | null;
 
 export default function SignInScreen() {
   const { colors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState<LoadingState>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleAuth(provider: LoadingState, fn: () => Promise<void>) {
-    setLoading(provider);
-    setError(null);
-    try {
-      await fn();
-    } catch (e: any) {
-      setError(e?.message ?? 'Sign in failed. Please try again.');
-    } finally {
-      setLoading(null);
-    }
-  }
+  const { loading, error, run } = useAuthAction();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.flex}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
@@ -77,7 +64,7 @@ export default function SignInScreen() {
               label="Email"
               value={email}
               onChangeText={setEmail}
-              placeholder="name@example.com"
+              placeholder="name@email.com"
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
@@ -111,13 +98,13 @@ export default function SignInScreen() {
             />
 
             {error && (
-              <Text variant="bodySmall" style={{ color: colors.error }}>
+              <HelperText type="error" visible padding="none">
                 {error}
-              </Text>
+              </HelperText>
             )}
 
             <AppButton
-              onPress={() => handleAuth('email', () => signInWithEmail(email, password))}
+              onPress={() => run('email', () => signInWithEmail(email, password), 'Sign in failed. Please try again.')}
               loading={loading === 'email'}
               disabled={!!loading}
               style={styles.loginButton}
@@ -128,18 +115,12 @@ export default function SignInScreen() {
 
           {/* Social */}
           <View style={styles.social}>
-            <View style={styles.dividerRow}>
-              <Divider style={styles.dividerLine} />
-              <Text variant="labelSmall" style={[styles.dividerLabel, { color: colors.onSurfaceVariant }]}>
-                OR CONTINUE WITH
-              </Text>
-              <Divider style={styles.dividerLine} />
-            </View>
+            <AuthDivider label="OR CONTINUE WITH" />
 
             <View style={styles.socialButtons}>
               <AppButton
                 variant="outlined"
-                onPress={() => handleAuth('strava', signInWithStrava)}
+                onPress={() => run('strava', signInWithStrava)}
                 loading={loading === 'strava'}
                 disabled={!!loading}
                 icon={() => <StravaIcon size={18} />}
@@ -149,7 +130,7 @@ export default function SignInScreen() {
               </AppButton>
               <AppButton
                 variant="outlined"
-                onPress={() => handleAuth('google', signInWithGoogle)}
+                onPress={() => run('google', signInWithGoogle)}
                 loading={loading === 'google'}
                 disabled={!!loading}
                 icon={() => <GoogleIcon size={18} />}
@@ -180,9 +161,6 @@ export default function SignInScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   flex: {
     flex: 1,
   },
@@ -197,8 +175,8 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontFamily: Fonts.display,
-    fontSize: 48,
-    lineHeight: 56,
+    fontSize: 40,
+    lineHeight: 48,
     letterSpacing: -1,
   },
   welcome: {
@@ -218,17 +196,6 @@ const styles = StyleSheet.create({
   },
   social: {
     gap: 16,
-  },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  dividerLine: {
-    flex: 1,
-  },
-  dividerLabel: {
-    letterSpacing: 1,
   },
   socialButtons: {
     flexDirection: 'row',

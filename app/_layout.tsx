@@ -29,7 +29,7 @@ export const unstable_settings = {
 };
 
 function AuthGate() {
-  const { session, isLoading, setSession, setLoading } = useAuthStore();
+  const { session, isLoading, recoveryMode, setSession, setLoading, setRecoveryMode } = useAuthStore();
   const segments = useSegments();
   const segmentsRef = useRef(segments);
   segmentsRef.current = segments;
@@ -42,25 +42,36 @@ function AuthGate() {
       setLoading(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setRecoveryMode(true);
+        setSession(newSession);
+        return;
+      }
       setSession(newSession);
     });
 
     return () => listener.subscription.unsubscribe();
-  }, [setSession, setLoading]);
+  }, [setSession, setLoading, setRecoveryMode]);
 
   // Handle redirects — only re-run when auth state changes, not on every navigation
   useEffect(() => {
     if (isLoading) return;
 
     const inAuth = segmentsRef.current[0] === '(auth)';
+    const onResetScreen = segmentsRef.current[1] === 'reset-password';
+
+    if (recoveryMode) {
+      if (!onResetScreen) router.replace('/(auth)/reset-password');
+      return;
+    }
 
     if (!session) {
       if (!inAuth) router.replace('/(auth)/sign-in');
     } else {
       if (inAuth) router.replace('/(tabs)');
     }
-  }, [session, isLoading, router]);
+  }, [session, isLoading, recoveryMode, router]);
 
   return null;
 }
